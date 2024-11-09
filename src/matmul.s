@@ -61,7 +61,7 @@ matmul:
     
 outer_loop_start:
     #s0 is going to be the loop counter for the rows in A
-    li s1, 0
+    li s1, 0                    # Reset the col loop
     mv s4, a3
     blt s0, a1, inner_loop_start
 
@@ -111,11 +111,14 @@ inner_loop_start:
     li t1, 4
     add s4, s4, t1 # incrememtning the column on Matrix B
     
-    addi s1, s1, 1
+    addi s1, s1, 1                  # add col index
     j inner_loop_start
     
 inner_loop_end:
     # TODO: Add your own implementation
+
+outer_loop_end:
+
 
 error:
     li a0, 38

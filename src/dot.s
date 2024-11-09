@@ -31,12 +31,31 @@ dot:
     blt a3, t0, error_terminate   
     blt a4, t0, error_terminate  
 
-    li t0, 0            
-    li t1, 0         
+    li t0, 0                                # Represent Sum
+    li t1, 0                                # Represent Index
 
 loop_start:
-    bge t1, a2, loop_end
+    bge t1, a2, loop_end                    # if t1 >= a2, then loop_end
     # TODO: Add your own implementation
+
+    # Calculate addr of first input[t1]
+    mul t2, t1, a3                          # t2 = index * stride1
+    slli t2, t2, 2                          # t2 = t2 * 4 (offset)
+    add t2, a0, t2                          # t2 = input1_addr + offset
+    lw t3, 0(t2)
+
+    # Calculate addr of second input[t1], reuse t2
+    mul t2, t1, a4                          # t2 = index * stride2
+    slli t2, t2, 2                          
+    add t2, a1, t2
+    lw t4, 0(t2)
+
+    # Compute
+    mul t2, t3, t4                          # t2 = t3 * t4
+    add t0, t0, t2                          # t0 = t0 + t2 (sum)
+
+    addi t1, t1, 1                          # next index
+    j loop_start
 
 loop_end:
     mv a0, t0
