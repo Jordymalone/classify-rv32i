@@ -18,11 +18,12 @@ abs:
     # Prologue
     ebreak
     # Load number from memory
-    lw t0 0(a0)
-    bge t0, zero, done
+    lw t0, 0(a0)
+    bge t0, zero, done                  # if t0 >= 0, then done
 
     # TODO: Add your own implementation
-
+    sub t0, x0, t0                      # else t0 = 0 - t0 (turn into positive)
+    sw t0, 0(a0)
 done:
     # Epilogue
     jr ra

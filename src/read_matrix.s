@@ -76,7 +76,18 @@ read_matrix:
 
     # mul s1, t1, t2   # s1 is number of elements
     # FIXME: Replace 'mul' with your own implementation
+# ==============================================================================
+    mv s1, x0                   # Initializing the result s1 to 0
+    mv t0, t2                   # copy multiplier to t0
 
+mul_loop:
+    beq t0, x0, mul_done        # if t0 == 0, then mul_done
+    addi t0, t0, -1             # t0 -= 1
+    add s1, s1, t1              # Add row once into s1
+    j mul_loop
+
+mul_done:
+# ==============================================================================
     slli t3, s1, 2
     sw t3, 24(sp)    # size in bytes
 
