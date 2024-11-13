@@ -64,8 +64,12 @@ write_matrix:
     # mul s4, s2, s3   # s4 = total elements
     # FIXME: Replace 'mul' with your own implementation
 # ==============================================================================
+    addi sp, sp, -8
+    sw t0, 0(sp)
+    sw t1, 4(sp)
+
     mv t0, x0                   # Initializing the result t0 to 0
-    mv t1, s3                  # copy multiplier to t2
+    mv t1, s3                   # copy multiplier to t2
 
 mul_loop:
     beq t1, x0, mul_done        # if t1 == 0, then mul_done
@@ -75,6 +79,9 @@ mul_loop:
 
 mul_done:
     mv s4, t0
+    lw t0, 0(sp)
+    lw t1, 4(sp)
+    addi sp, sp 8
 # ==============================================================================
     # write matrix data to file
     mv a0, s0

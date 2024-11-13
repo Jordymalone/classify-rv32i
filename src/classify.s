@@ -164,9 +164,21 @@ classify:
     sw a5, 20(sp)
     sw a6, 24(sp)
     
-    lw t0, 0(s3)
-    lw t1, 0(s8)
+    lw t0, 0(s3)                    # load m0 rows
+    lw t1, 0(s8)                    # load input cols
     # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+# =======================================================
+    li a0, 0                        # Clear a0 (result)
+    mv t2, t1                       # Copy multiplier into t1
+
+mul_loop1:
+    beqz t2, mul_done1              # if t2 = 0, then mul_done
+    add a0, a0, t0                  # add multiplicand into a0
+    addi t2, t2, -1
+    j mul_loop1
+
+mul_done1:
+# =======================================================
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -204,12 +216,23 @@ classify:
     lw t0, 0(s3)
     lw t1, 0(s8)
     # mul a1, t0, t1 # length of h array and set it as second argument
+# =======================================================
     # FIXME: Replace 'mul' with your own implementation
+    li a1, 0                        # Set a1 into 0
+    mv t2, t1
+
+mul_loop2:
+    beqz t2, mul_done2
+    add a1, a1, t0
+    addi t2, t2, -1
+    j mul_loop2
+
+mul_done2:
+# =======================================================
+    jal relu                        # relu will not call another func so no ra saved
     
-    jal relu
-    
-    lw a0, 0(sp)
-    lw a1, 4(sp)
+    lw a0, 0(sp)                    
+    lw a1, 4(sp)                    
     
     addi sp, sp, 8
     
@@ -227,6 +250,18 @@ classify:
     lw t0, 0(s3)
     lw t1, 0(s6)
     # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+# =======================================================
+    li a0, 0
+    mv t2, t1
+
+mul_loop3:
+    beqz t2, mul_done3
+    add a0, a0, t0
+    addi t2, t2, -1
+    j mul_loop3
+
+mul_done3:
+# =======================================================
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -286,8 +321,20 @@ classify:
     mv a0, s10 # load o array into first arg
     lw t0, 0(s3)
     lw t1, 0(s6)
-    mul a1, t0, t1 # load length of array into second arg
+    # mul a1, t0, t1 # load length of array into second arg
+# =======================================================
     # FIXME: Replace 'mul' with your own implementation
+    li a1, 0
+    mv t2, t1
+
+mul_loop4:
+    beqz t2, mul_done4
+    add a1, a1, t0
+    addi t2, t2, -1
+    j mul_loop4
+
+mul_done4:
+# =======================================================
     
     jal argmax
     
