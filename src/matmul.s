@@ -120,7 +120,23 @@ inner_loop_end:
     # After finish the col loop, adjust row position to M0
     addi s0, s0, 1                  # add row loop
     li t1, 4
-    mul t0, a2, t1                  # t0 = col0 * 4 (offset) 
+    
+    # mul t0, a2, t1                # t0 = col0 * 4 (offset) 
+    mv t2, a2
+    li t0, 0
+
+mul_loop:
+    beqz t1, mul_done
+    andi t3, t1, 1
+    beqz t3, skip_add
+    add t0, t0, t2
+
+skip_add:
+    slli t2, t2, 1
+    srli t1, t1, 1
+    j mul_loop
+
+mul_done:
     add s3, s3, t0                  # Move s3 to the next row of M0
 
     j outer_loop_start
@@ -137,7 +153,7 @@ outer_loop_end:
     addi sp, sp, 28                 # Deallocate the stack space
 
     ret
-
+# =======================================================
 error:
     li a0, 38
     j exit
